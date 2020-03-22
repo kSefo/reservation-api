@@ -22,19 +22,18 @@ func main() {
 		return
 	}
 
-	mux := http.NewServeMux()
-
 	// ヘルスチェック用APIのハンドラを作成
 	hc := func(w http.ResponseWriter, r *http.Request) {
 		log.Println("[GET] /hc")
 		w.Write([]byte("OK"))
 	}
 
-	// 予約テーブル操作APIのハンドラを作成
-	reservationHandler := NewReservationHandler(masterDB)
-
 	// ハンドラをAPIエンドポイントとして登録
-	mux.Handle("/reservation", reservationHandler)
+	mux := http.NewServeMux()
+	mux.Handle("/user", NewUserHandler(masterDB))
+	mux.Handle("/menu", NewMenuHandler(masterDB))
+	mux.Handle("/salesDay", NewSalesDayHandler(masterDB))
+	mux.Handle("/reservation", NewReservationHandler(masterDB))
 	mux.HandleFunc("/hc", hc)
 
 	// サーバのポートやハンドラを設定し、Listenを開始
